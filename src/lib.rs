@@ -1,17 +1,17 @@
 pub(crate) mod decode;
-pub(crate) mod encode;
-pub(crate) mod game;
-pub(crate) mod utils;
+pub mod encode;
+pub mod game;
+pub mod utils;
 
 use wasm_bindgen::prelude::*;
 
 use crate::{
-    game::create_game,
-    utils::{GemeType, create_game_v1},
+    game::{create_game, hide_answer_mask},
+    utils::{GemeType, vec_vec_bool_to_js_value, vec_vecu8_to_js_value_v1},
 };
 
 #[wasm_bindgen]
-pub fn create_game_web(n: JsValue, max_try: JsValue, game_level: JsValue) -> JsValue {
+pub fn create_game_web(n: JsValue, max_try: JsValue, t: JsValue) -> JsValue {
     let n = match n.as_f64() {
         Some(v) => {
             let v = v as usize;
@@ -27,17 +27,33 @@ pub fn create_game_web(n: JsValue, max_try: JsValue, game_level: JsValue) -> JsV
         None => return JsValue::null(),
     };
     match create_game(n, max_try) {
-        Some(v) => create_game_v1(v, GemeType::from(game_level)),
-        None => return JsValue::null(),
+        Some(v) => {
+            let t = GemeType::from(t);
+            let mask = hide_answer_mask(n as usize, t);
+
+            let e1 = encode_with_answer(&v, &mask, t);
+            let e2 = encode_without_answer(&v, &mask, t);
+
+            let g = vec_vecu8_to_js_value_v1(v);
+            let mask = vec_vec_bool_to_js_value(mask);
+            JsValue::from([g, mask, e1, e2].to_vec())
+        }
+        None => JsValue::null(),
     }
 }
 
-#[wasm_bindgen]
-pub fn encode_with_answer(game: JsValue, game_level: JsValue) -> JsValue {
+pub fn encode_with_answer(
+    v: &Vec<Vec<u8>>,
+    mask: &Vec<Vec<bool>>,
+    game_level: GemeType,
+) -> JsValue {
     todo!()
 }
 
-#[wasm_bindgen]
-pub fn encode_without_answer(game: JsValue, game_level: JsValue) -> JsValue {
+pub fn encode_without_answer(
+    v: &Vec<Vec<u8>>,
+    mask: &Vec<Vec<bool>>,
+    game_level: GemeType,
+) -> JsValue {
     todo!()
 }

@@ -1,7 +1,9 @@
-use js_sys::Array;
 use wasm_bindgen::JsValue;
 
-pub(crate) enum GemeType {
+use crate::game::hide_answer_mask;
+
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub enum GemeType {
     Easy,
     Medium,
     Difficult,
@@ -24,26 +26,24 @@ impl From<JsValue> for GemeType {
     }
 }
 
-impl GemeType {
-    pub(crate) fn to_js_value(&self) -> JsValue {
-        match self {
-            Self::Easy => JsValue::from_str("easy"),
-            Self::Medium => JsValue::from_str("medium"),
-            Self::Difficult => JsValue::from_str("difficult"),
-        }
-    }
-}
-
-pub(crate) fn create_game_v1(value: Vec<Vec<u8>>, game_level: GemeType) -> JsValue {
-    let c = value
+pub(crate) fn vec_vecu8_to_js_value_v1(value: Vec<Vec<u8>>) -> JsValue {
+    let v = value
         .into_iter()
         .map(|v| JsValue::from(v))
         .collect::<Vec<JsValue>>();
-    let array = Array::new();
-    for raw in c {
-        array.push(&raw);
-    }
-    let table = JsValue::from(array);
-    todo!()
+    JsValue::from(v)
 }
 
+pub(crate) fn vec_vec_bool_to_js_value(mask: Vec<Vec<bool>>) -> JsValue {
+    let mask = mask
+        .into_iter()
+        .map(|v| {
+            JsValue::from(
+                v.into_iter()
+                    .map(|b| JsValue::from_bool(b))
+                    .collect::<Vec<JsValue>>(),
+            )
+        })
+        .collect::<Vec<JsValue>>();
+    JsValue::from(mask)
+}

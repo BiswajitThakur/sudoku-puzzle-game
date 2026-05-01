@@ -1,48 +1,45 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Sudoku - Puzzle Game</title>
-    <link href="style.css" rel="stylesheet" />
-  </head>
-  <body>
-    <h2 style="text-align: center; color: #086f23">Sudoku - Puzzle Game</h2>
-    <div id="game_cnt"></div>
-    <div class="options">
-      <div class="game-btns" id="d_lvl"></div>
-      <div class="game-btns" id="ctrls">
-        <button id="undo">Undo</button>
-        <button id="redo">Redo</button>
-        <button id="solve">Solve</button>
-        <button id="reset">Reset</button>
-        <button id="share">Share</button>
-        <button id="varify">Varify</button>
-      </div>
-      <div class="game-btns">
-        <input
-          id="create_new_inp"
-          type="number"
-          name="create_new"
-          value=""
-          placeholder="Enter size of the game"
-        />
-        <div>
-          <label for="game_lvl">Choose a Level:</label>
-          <select name="game_lvl" id="game_lvl">
-            <option value="1">Easy</option>
-            <option value="2">Medium</option>
-            <option value="3">Difficult</option>
-          </select>
-        </div>
-        <button id="create_new">Create New</button>
-      </div>
-      <a
-        class="game-btns"
-        href="https://github.com/BiswajitThakur/sudoku-puzzle-game.git"
-        >Source Code</a
-      >
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sudoku - Puzzle Game</title>
+  <link href="style.css" rel="stylesheet" />
+  <script type="module">
+    import init, {create_game_web} from "./pkg/sudoku_puzzle_game.js";
+  </script>
+</head>
+
+<body>
+  <h2 style="text-align: center; color: #086f23">Sudoku - Puzzle Game</h2>
+  <div id="game_cnt"></div>
+  <div class="options">
+    <div class="game-btns" id="d_lvl"></div>
+    <div class="game-btns" id="ctrls">
+      <button id="undo">Undo</button>
+      <button id="redo">Redo</button>
+      <button id="solve">Solve</button>
+      <button id="reset">Reset</button>
+      <button id="share">Share</button>
+      <button id="varify">Varify</button>
     </div>
-    <script src="script.js"></script>
-  </body>
+    <div class="game-btns">
+      <input id="create_new_inp" type="number" name="create_new" value="" placeholder="Enter size of the game" />
+      <div>
+        <label for="game_lvl">Choose a Level:</label>
+        <select name="game_lvl" id="game_lvl">
+          <option value="1">Easy</option>
+          <option value="2">Medium</option>
+          <option value="3">Difficult</option>
+        </select>
+      </div>
+      <button id="create_new">Create New</button>
+    </div>
+    <a class="game-btns" href="https://github.com/BiswajitThakur/sudoku-puzzle-game.git">Source Code</a>
+  </div>
+  <script type="module" src="script.js"></script>
+
+</body>
+
 </html>

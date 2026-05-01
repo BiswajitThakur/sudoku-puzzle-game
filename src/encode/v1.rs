@@ -2,81 +2,12 @@ use base64::prelude::*;
 
 use crate::utils::GemeType;
 
-pub fn encode_hide_answer(data: Vec<Vec<u8>>, level: GemeType) -> String {
-    let mut all = Vec::new();
-    all.extend_from_slice(b"v1:");
-    match level {
-        GemeType::Easy => {
-            all.push(b'0');
-        }
-        GemeType::Medium => {
-            all.push(b'1');
-        }
-        GemeType::Difficult => {
-            all.push(b'2');
-        }
-    }
-
-    all.push(b'1');
-    all.push(data.len() as u8);
-
-    let remove_indices = generate_remove_indices(data.len() as u8, level);
-
-    all.extend_from_slice(&remove_indices);
-
-    let bool_grid = bitmask_to_bool_grid(data.len() as u8, remove_indices.as_slice());
-    let new_data = update_table(data, bool_grid);
-    let encoded = encode_table(new_data);
-    all.extend_from_slice(&encoded);
-    BASE64_STANDARD.encode(all)
+// v1_<0:easy|1:medium|2:difficult><0:show|1:hide ans>_<u8:game len><game_data:base64><ans:base64>
+pub fn encode_game_keep_answer(data: Vec<Vec<u8>>) -> String {
+    todo!()
 }
-
-pub fn encode_keep_answer(data: Vec<Vec<u8>>, level: GemeType) -> String {
-    let mut all = Vec::new();
-    all.extend_from_slice(b"v1:");
-    match level {
-        GemeType::Easy => {
-            all.push(b'0');
-        }
-        GemeType::Medium => {
-            all.push(b'1');
-        }
-        GemeType::Difficult => {
-            all.push(b'2');
-        }
-    }
-
-    all.push(b'0');
-    all.push(data.len() as u8);
-
-    let remove_indices = generate_remove_indices(data.len() as u8, level);
-
-    all.extend_from_slice(&remove_indices);
-
-    let encoded = encode_table(data);
-    all.extend_from_slice(&encoded);
-    BASE64_STANDARD.encode(all)
-}
-
-fn update_table(data: Vec<Vec<u8>>, mask: Vec<Vec<bool>>) -> Vec<Vec<u8>> {
-    let n = data.len();
-    let mut result = Vec::with_capacity(n);
-
-    for i in 0..n {
-        let mut row = Vec::with_capacity(n);
-
-        for j in 0..data[i].len() {
-            if mask[i][j] {
-                row.push(0);
-            } else {
-                row.push(data[i][j]);
-            }
-        }
-
-        result.push(row);
-    }
-
-    result
+pub fn encode_game_without_answer() -> String {
+    todo!()
 }
 
 pub fn generate_remove_indices(n: u8, level: GemeType) -> Vec<u8> {
@@ -199,7 +130,12 @@ fn split(x: u8) -> (u8, u8) {
 
 #[cfg(test)]
 mod tests {
-    use crate::encode::v1::{decode_table, encode_table};
+    use crate::{
+        encode::v1::{decode_table, encode_table},
+        encode_without_answer,
+        game::create_game,
+        utils::GemeType,
+    };
 
     #[test]
     fn test_encode_decode_table_1() {

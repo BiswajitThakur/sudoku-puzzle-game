@@ -1,5 +1,12 @@
 "use strict";
 
+import init, { create_game_web } from "./pkg/sudoku_puzzle_game.js";
+
+init().then(() => {
+  let v = create_game_web(9, 100000, 2);
+  console.log(999);
+  console.log(v);
+});
 let game_table = null; // root element of game table
 
 let game_elements = null;
@@ -14,6 +21,7 @@ function push_input_history(elm) {
   input_history.push([elm.value, elm]);
 }
 
+/*
 function random_select(elem) {
   if (!Array.isArray(elem)) {
     throw new Error("input elem must be array.");
@@ -104,6 +112,7 @@ function create_mx(size) {
   }
   return rc;
 }
+*/
 
 function select_rand_from_metrix(size) {
   return [Math.floor(Math.random() * size), Math.floor(Math.random() * size)];
@@ -158,7 +167,7 @@ function gen_lvl(size, lvl) {
     }
   }
   const attr_name = "data-is";
-  return function (r, c, val) {
+  return function(r, c, val) {
     const input = document.createElement("input");
     input.setAttribute(attr_name, val);
     input.setAttribute("type", "number");
