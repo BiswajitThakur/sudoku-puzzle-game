@@ -1,18 +1,4 @@
-use crate::utils::GemeType;
-
-struct Sudoku {
-    data: Vec<Vec<u8>>,
-    mask: Vec<Vec<bool>>,
-    t: GemeType,
-}
-
-impl Sudoku {
-    fn new(n: u8, t: GemeType, max_try: usize) -> Option<Self> {
-        let data = create_game(n, max_try)?;
-        let mask = hide_answer_mask(n as usize, t);
-        Some(Self { data, mask, t })
-    }
-}
+use crate::utils::Level;
 
 fn random_select(vec: &[u8]) -> Option<u8> {
     if vec.is_empty() {
@@ -47,12 +33,10 @@ impl ColumnState {
         for &val in &self.available {
             let bit = 1 << val;
 
-            // already used in row
             if (*row_mask & bit) != 0 {
                 continue;
             }
 
-            // already used in column
             if (self.used_mask & bit) != 0 {
                 continue;
             }
@@ -64,11 +48,9 @@ impl ColumnState {
 
         let bit = 1 << selected;
 
-        // mark used
         self.used_mask |= bit;
         *row_mask |= bit;
 
-        // remove from available (O(1))
         if let Some(pos) = self.available.iter().position(|&x| x == selected) {
             self.available.swap_remove(pos);
         }
@@ -147,12 +129,12 @@ pub fn create_game(n: u8, max_try: usize) -> Option<Vec<Vec<u8>>> {
     Some(table)
 }
 
-pub fn hide_answer_mask(n: usize, g: GemeType) -> Vec<Vec<bool>> {
+pub fn hide_answer_mask(n: usize, g: Level) -> Vec<Vec<bool>> {
     let total = n * n;
     let max_remove = match g {
-        GemeType::Easy => total / 3,
-        GemeType::Medium => total / 2,
-        GemeType::Difficult => (total * 2) / 3,
+        Level::Easy => total / 3,
+        Level::Medium => total / 2,
+        Level::Difficult => (total * 2) / 3,
     };
     let mut count = 0;
     let mut total_try = 0;
@@ -160,21 +142,38 @@ pub fn hide_answer_mask(n: usize, g: GemeType) -> Vec<Vec<bool>> {
     while count < max_remove && total_try < 1000000 {
         let ranw_raw = rand::random_range(0..n);
         let rand_coll = rand::random_range(0..n);
-        if !arr[rand_coll][ranw_raw] {
-            arr[rand_coll][ranw_raw] = true;
-            count += 1;
+        unsafe {
+            //if !arr[rand_coll][ranw_raw] {
+            if !arr.get_unchecked(rand_coll).get_unchecked(ranw_raw) {
+                //arr[rand_coll][ranw_raw] = true;
+                *arr.get_unchecked_mut(rand_coll).get_unchecked_mut(ranw_raw) = true;
+                count += 1;
+            }
         }
         total_try += 1;
     }
-    return arr;
+    arr
 }
 
-pub fn hide_answer_mask_mut(arr: &mut Vec<Vec<u8>>, g: GemeType) -> Vec<Vec<bool>> {
+pub fn hide_answers_inplace(v: &mut [Vec<u8>], mask: &[Vec<bool>]) {
+    for (i, row) in mask.iter().enumerate() {
+        for (j, &m) in row.iter().enumerate() {
+            if m {
+                unsafe {
+                    //v[i][j] = 0;
+                    *v.get_unchecked_mut(i).get_unchecked_mut(j) = 0;
+                }
+            }
+        }
+    }
+}
+
+pub fn hide_answer_mask_mut(arr: &mut [Vec<u8>], g: Level) -> Vec<Vec<bool>> {
     let total = arr.len() * arr.len();
     let max_remove = match g {
-        GemeType::Easy => total / 3,
-        GemeType::Medium => total / 2,
-        GemeType::Difficult => (total * 2) / 3,
+        Level::Easy => total / 3,
+        Level::Medium => total / 2,
+        Level::Difficult => (total * 2) / 3,
     };
     let mut count = 0;
     let mut total_try = 0;
@@ -189,20 +188,20 @@ pub fn hide_answer_mask_mut(arr: &mut Vec<Vec<u8>>, g: GemeType) -> Vec<Vec<bool
         }
         total_try += 1;
     }
-    return arr_bool;
+    arr_bool
 }
 
-pub(crate) fn vec_vec_bool_to_vec_u8(v: Vec<Vec<bool>>) -> Vec<u8> {
+pub(crate) fn grid_to_bitmask(v: &[Vec<bool>]) -> Vec<u8> {
     let total = v.len() * v.len();
 
     // flatten
     let mut large = Vec::with_capacity(total);
     for row in v {
-        large.extend_from_slice(&row);
+        large.extend_from_slice(row);
     }
     let rem = large.len() % 8;
     if rem != 0 {
-        large.extend(std::iter::repeat(false).take(8 - rem));
+        large.extend(std::iter::repeat_n(false, 8 - rem));
     }
 
     // pack 8 bools -> 1 byte
@@ -223,7 +222,7 @@ pub(crate) fn vec_vec_bool_to_vec_u8(v: Vec<Vec<bool>>) -> Vec<u8> {
     arr
 }
 
-pub(crate) fn vec_u8_to_vec_vec_bool(data: &[u8], n: usize) -> Vec<Vec<bool>> {
+pub(crate) fn bitmask_to_grid(data: &[u8], n: usize) -> Vec<Vec<bool>> {
     let total = n * n;
 
     // unpack bits
@@ -251,18 +250,18 @@ pub(crate) fn vec_u8_to_vec_vec_bool(data: &[u8], n: usize) -> Vec<Vec<bool>> {
 
 #[cfg(test)]
 mod tests {
-    use crate::game::{vec_u8_to_vec_vec_bool, vec_vec_bool_to_vec_u8};
+    use crate::game::{bitmask_to_grid, grid_to_bitmask};
 
     #[test]
     fn test_111() {
         let v = vec![vec![true; 9]; 9];
-        let u = vec_vec_bool_to_vec_u8(v.clone());
-        let got = vec_u8_to_vec_vec_bool(u.as_slice(), 9);
+        let u = grid_to_bitmask(&v);
+        let got = bitmask_to_grid(u.as_slice(), 9);
         assert_eq!(v, got);
 
         let v = vec![vec![false; 9]; 9];
-        let u = vec_vec_bool_to_vec_u8(v.clone());
-        let got = vec_u8_to_vec_vec_bool(u.as_slice(), 9);
+        let u = grid_to_bitmask(&v);
+        let got = bitmask_to_grid(u.as_slice(), 9);
         assert_eq!(v, got);
     }
 }
