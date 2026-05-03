@@ -32,12 +32,12 @@ jobs:
       - name: Prepare deploy directory
         run: |
           mkdir dist
+          rm .gitignore
           cp -r pkg dist/
           cp index.html dist/
           cp script.js dist/ || true
           cp style.css dist/ || true
           touch dist/.nojekyll
-          ls dist/pkg
 
       - name: Deploy to gh-pages
         uses: peaceiris/actions-gh-pages@v4
