@@ -3,12 +3,13 @@
 import init, { new_game_web_v1, decode_game_v1 } from "./pkg/sudoku_puzzle_game.js";
 
 function setTheme(level) {
-  document.body.classList.remove("easy", "medium", "difficult");
+  const level_lower = level.toLowerCase();
+  document.body.classList.remove("idle", "easy", "medium", "difficult");
   document.getElementById("game_cnt")
     .classList.remove("easy", "medium", "difficult");
 
-  document.body.classList.add(level);
-  document.getElementById("game_cnt").classList.add(level);
+  document.body.classList.add(level_lower);
+  document.getElementById("game_cnt").classList.add(level_lower);
 }
 
 document.addEventListener("focusin", (e) => {
@@ -37,9 +38,58 @@ document.addEventListener("focusout", () => {
 
 let game_table = null;
 let game_elements = null;
+let game_data_without_solution = null;
+let game_data_with_solution = null;
 
 let input_history = [];
 let undo = [];
+
+
+const btn_share_with_solution = document.getElementById("share_with_solution");
+btn_share_with_solution.addEventListener("click", async () => {
+  const shareUrl =
+    window.location.origin +
+    window.location.pathname + '#' +
+    game_data_with_solution;
+
+  const originalText = btn_share_with_solution.innerText;
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+
+    btn_share_with_solution.innerText = "Copied";
+
+  } catch (err) {
+    btn_share_with_solution.innerText = "Failed";
+  }
+
+  setTimeout(() => {
+    btn_share_with_solution.innerText = originalText;
+  }, 2000);
+});
+
+const btn_share_without_solution = document.getElementById("share_without_solution");
+btn_share_without_solution.addEventListener("click", async () => {
+  const shareUrl =
+    window.location.origin +
+    window.location.pathname + '#' +
+    game_data_without_solution;
+
+  const originalText = btn_share_without_solution.innerText;
+
+  try {
+    await navigator.clipboard.writeText(shareUrl);
+
+    btn_share_without_solution.innerText = "Copied";
+
+  } catch (err) {
+    btn_share_without_solution.innerText = "Failed";
+  }
+
+  setTimeout(() => {
+    btn_share_without_solution.innerText = originalText;
+  }, 2000);
+});
 
 function push_input_history(elm) {
   input_history.push([elm.value, elm]);
@@ -90,25 +140,7 @@ function grid_to_dom(grid, mask) {
 
   return { root, elements };
 }
-function set_lvl_msg(level) {
 
-  const elm = document.getElementById("d_lvl");
-  const cls = ["msg-easy", "msg-medium", "msg-difficult"];
-  if (level == "easy") {
-    elm.classList.remove(cls[1]);
-    elm.classList.remove(cls[2]);
-    elm.classList.add(cls[0]);
-  } else if (level == "medium") {
-    elm.classList.remove(cls[0]);
-    elm.classList.remove(cls[2]);
-    elm.classList.add(cls[1]);
-  } else if (level == "difficult") {
-    elm.classList.remove(cls[0]);
-    elm.classList.remove(cls[1]);
-    elm.classList.add(cls[2]);
-  }
-  elm.textContent = `Game Level: ${level.replace(/^./, level[0].toUpperCase())}`;
-}
 init().then(() => {
   document.getElementById("create_new").addEventListener("click", () => {
     const value = document.getElementById("create_new_inp").value.trim();
@@ -131,13 +163,13 @@ init().then(() => {
     const mask = result[2];
     const encodedPuzzle = result[3];
     const encodedSolution = result[4];
-    console.log("RESULT:", result);
-    console.log("GRID:", grid);
-    console.log("MASK:", mask);
+
+    game_data_without_solution = encodedPuzzle;
+    game_data_with_solution = encodedSolution;
     render_game(level, grid, mask);
 
-    // store encoded in URL
-    window.location.hash = encodedSolution;
+    //window.location.hash = encodedSolution;
+    history.replaceState(null, "", `#${encodedSolution}`);
   });
 });
 
@@ -154,10 +186,11 @@ function render_game(level, grid, mask) {
   game_table = root;
   game_elements = elements;
 
-  setTheme(level);
   document.getElementById("game_cnt").appendChild(root);
-  document.getElementById("ctrls").style.display = "flex";
-  set_lvl_msg(level);
+  let t = `Sudoku (${grid.length}×${grid.length} • ${level})`;
+  document.title = t;
+  document.getElementById("title_h2").innerHTML = t;
+  setTheme(level);
 }
 
 function load_from_hash() {
@@ -178,6 +211,9 @@ function load_from_hash() {
     const mask = result[2];
 
     render_game(level, grid, mask);
+    document.getElementById("create_new_inp").value = grid.length;
+    game_data_without_solution = result[3];
+    game_data_with_solution = result[4];
   });
 
 }
@@ -257,5 +293,5 @@ document.getElementById("varify").addEventListener("click", () => {
     }
   }
 
-  alert(win ? "You win 🎉" : "Wrong input ❌");
+  alert(win ? "Congratulations, you solved the puzzle 🎉" : "Wrong input ❌");
 });

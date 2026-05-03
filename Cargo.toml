@@ -2,9 +2,16 @@
 name = "sudoku-puzzle-game"
 version = "0.1.0"
 edition = "2024"
+authors = ["Biswajit Thakur"]
+description = "A Sudoku puzzle generator"
+license-file = "LICENSE"
+repository = "https://github.com/BiswajitThakur/sudoku-puzzle-game"
+readme = "README.md"
+keywords = ["sudoku", "puzzle", "wasm", "game"]
+categories = ["games", "wasm"]
 
 [lib]
-crate-type = ["lib", "cdylib"]
+crate-type = ["cdylib"]
 
 [dependencies]
 base64 = "0.22.1"

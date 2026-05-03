@@ -6,6 +6,28 @@ body {
   text-align: center;
 }
 
+body.idle {
+  /*background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);*/
+  background: #0f1720;
+  /* dark background */
+  color: #ffffff;
+}
+
+body.idle button {
+  background: #00d4ff;
+  color: black;
+}
+
+body.idle button:hover {
+  background: #00aacc;
+}
+
+body.idle input,
+body.idle select {
+  border-color: #00d4ff;
+}
+
+
 .container {
   max-width: 900px;
   margin: auto;
@@ -287,4 +309,88 @@ body.difficult button:hover {
     flex: 1 1 auto;
     min-width: 70px;
   }
+}
+
+#d_lvl.easy {
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+#d_lvl.medium {
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+#d_lvl.difficult {
+  color: #ff0066;
+  font-weight: bold;
+}
+
+
+/* ========================= */
+/* 📴 IDLE STATE (no game) */
+/* ========================= */
+
+body.idle #ctrls {
+  display: none !important;
+}
+
+body.idle #d_lvl {
+  display: none !important;
+}
+
+/* optional: hide board */
+body.idle #game_cnt {
+  display: none;
+}
+
+/* show only create section */
+body.idle .game-btns:last-child {
+  display: flex;
+}
+
+/* ========================= */
+/* 🎮 ACTIVE GAME STATE */
+/* ========================= */
+
+body:not(.idle) #ctrls {
+  display: flex;
+}
+
+body:not(.idle) #d_lvl {
+  display: flex;
+}
+
+body:not(.idle) #game_cnt {
+  display: inline-block;
+}
+
+/************************************************/
+
+/* IDLE: minimal animation */
+
+@keyframes idleBorder {
+  0% {
+    border-color: #00d4ff;
+  }
+
+  50% {
+    border-color: #00ffcc;
+  }
+
+  100% {
+    border-color: #00d4ff;
+  }
+}
+
+body.idle input,
+body.idle select,
+body.idle button {
+  animation: idleBorder 4s ease-in-out infinite;
+}
+
+input,
+select,
+button {
+  border: 1px solid #00d4ff;
 }

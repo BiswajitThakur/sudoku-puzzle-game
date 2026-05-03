@@ -10,9 +10,9 @@ pub enum Level {
 impl Level {
     pub(crate) fn as_js_value(&self) -> JsValue {
         match self {
-            Self::Easy => JsValue::from_str("easy"),
-            Self::Medium => JsValue::from_str("medium"),
-            Self::Difficult => JsValue::from_str("difficult"),
+            Self::Easy => JsValue::from_str("Easy"),
+            Self::Medium => JsValue::from_str("Medium"),
+            Self::Difficult => JsValue::from_str("Difficult"),
         }
     }
 }
