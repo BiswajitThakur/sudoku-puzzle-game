@@ -1,0 +1,396 @@
+body {
+  margin: 0;
+  font-family: "Segoe UI", sans-serif;
+  transition: background 0.5s ease;
+  color: white;
+  text-align: center;
+}
+
+body.idle {
+  /*background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);*/
+  background: #0f1720;
+  /* dark background */
+  color: #ffffff;
+}
+
+body.idle button {
+  background: #00d4ff;
+  color: black;
+}
+
+body.idle button:hover {
+  background: #00aacc;
+}
+
+body.idle input,
+body.idle select {
+  border-color: #00d4ff;
+}
+
+
+.container {
+  max-width: 900px;
+  margin: auto;
+  padding: 20px;
+}
+
+#game_cnt {
+  position: relative;
+  display: inline-block;
+  padding: 12px;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #111;
+}
+
+/* animated border layer */
+#game_cnt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 2px;
+  border-radius: 12px;
+  z-index: 0;
+
+  -webkit-mask:
+    linear-gradient(#000 0 0) content-box,
+    linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+#game_cnt>* {
+  position: relative;
+  z-index: 1;
+}
+
+.game-raws {
+  display: flex;
+}
+
+.game-raws input {
+  width: 45px;
+  height: 45px;
+  margin: 2px;
+  text-align: center;
+  font-size: 1.2rem;
+  border: 1px solid #444;
+  background: #1a1a1a;
+  color: #00ffcc;
+  transition: all 0.2s ease;
+}
+
+.game-raws input:hover {
+  background: #222;
+}
+
+input[disabled] {
+  background: #000 !important;
+  color: #00ff00 !important;
+  font-weight: bold;
+}
+
+.options {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+}
+
+.game-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+button {
+  padding: 8px 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-width: 90px;
+}
+
+input,
+select {
+  background-color: #111 !important;
+  color: #00ffcc !important;
+  border: 1px solid #00d4ff;
+  padding: 6px 10px;
+  border-radius: 6px;
+  outline: none;
+}
+
+input::placeholder {
+  color: #888;
+}
+
+select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='%2300d4ff' height='20' viewBox='0 0 20 20' width='20'><path d='M5 7l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 16px;
+  padding-right: 30px;
+}
+
+option {
+  background: #111;
+  color: #00ffcc;
+}
+
+body.easy {
+  background: #0f2027;
+}
+
+body.easy button {
+  background: #00d4ff;
+  color: black;
+}
+
+body.easy button:hover {
+  background: #00aacc;
+}
+
+#game_cnt.easy::before {
+  background: linear-gradient(90deg, #00d4ff, #00ffcc);
+}
+
+#game_cnt.easy input:focus {
+  transform: scale(1.05);
+  border-color: #00d4ff;
+}
+
+@keyframes mediumBg {
+  0% {
+    background: #1a1a2e;
+  }
+
+  100% {
+    background: #16213e;
+  }
+}
+
+body.medium {
+  animation: mediumBg 5s infinite alternate;
+}
+
+body.medium button {
+  background: #8e44ad;
+  color: white;
+}
+
+body.medium button:hover {
+  background: #6c3483;
+}
+
+@keyframes borderMove {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 100% 50%;
+  }
+}
+
+#game_cnt.medium::before {
+  background: linear-gradient(270deg, #8e44ad, #00d4ff);
+  background-size: 200% 200%;
+  animation: borderMove 4s infinite;
+}
+
+#game_cnt.medium input:focus {
+  box-shadow: 0 0 10px #8e44ad;
+  transform: scale(1.08);
+}
+
+@keyframes hardBg {
+  0% {
+    background: #000000;
+  }
+
+  50% {
+    background: #1a001f;
+  }
+
+  100% {
+    background: #000000;
+  }
+}
+
+body.difficult {
+  animation: hardBg 6s infinite;
+}
+
+body.difficult button {
+  background: #ff0066;
+  color: white;
+  box-shadow: 0 0 10px #ff0066;
+}
+
+body.difficult button:hover {
+  transform: scale(1.1);
+  box-shadow: 0 0 20px #ff0066;
+}
+
+@keyframes borderFlow {
+  0% {
+    background-position: 0% 50%;
+  }
+
+  100% {
+    background-position: 200% 50%;
+  }
+}
+
+@keyframes borderGlow {
+  0% {
+    box-shadow: 0 0 5px #ff0066;
+  }
+
+  50% {
+    box-shadow: 0 0 25px #ff0066;
+  }
+
+  100% {
+    box-shadow: 0 0 5px #ff0066;
+  }
+}
+
+#game_cnt.difficult::before {
+  background: linear-gradient(270deg, #ff0066, #ffcc00, #00d4ff);
+  background-size: 300% 300%;
+  animation: borderFlow 3s linear infinite;
+}
+
+#game_cnt.difficult {
+  animation: borderGlow 2s infinite;
+}
+
+@keyframes cellGlow {
+  0% {
+    box-shadow: 0 0 5px #ff0066;
+  }
+
+  50% {
+    box-shadow: 0 0 15px #ff0066;
+  }
+
+  100% {
+    box-shadow: 0 0 5px #ff0066;
+  }
+}
+
+#game_cnt.difficult input:focus {
+  animation: cellGlow 1s infinite;
+  transform: scale(1.1) rotate(1deg);
+  border-color: #ff0066;
+}
+
+@media (max-width: 600px) {
+  .game-raws input {
+    width: 30px;
+    height: 30px;
+    font-size: 1rem;
+  }
+
+  button {
+    flex: 1 1 auto;
+    min-width: 70px;
+  }
+}
+
+#d_lvl.easy {
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+#d_lvl.medium {
+  color: #00d4ff;
+  font-weight: bold;
+}
+
+#d_lvl.difficult {
+  color: #ff0066;
+  font-weight: bold;
+}
+
+
+/* ========================= */
+/* 📴 IDLE STATE (no game) */
+/* ========================= */
+
+body.idle #ctrls {
+  display: none !important;
+}
+
+body.idle #d_lvl {
+  display: none !important;
+}
+
+/* optional: hide board */
+body.idle #game_cnt {
+  display: none;
+}
+
+/* show only create section */
+body.idle .game-btns:last-child {
+  display: flex;
+}
+
+/* ========================= */
+/* 🎮 ACTIVE GAME STATE */
+/* ========================= */
+
+body:not(.idle) #ctrls {
+  display: flex;
+}
+
+body:not(.idle) #d_lvl {
+  display: flex;
+}
+
+body:not(.idle) #game_cnt {
+  display: inline-block;
+}
+
+/************************************************/
+
+/* IDLE: minimal animation */
+
+@keyframes idleBorder {
+  0% {
+    border-color: #00d4ff;
+  }
+
+  50% {
+    border-color: #00ffcc;
+  }
+
+  100% {
+    border-color: #00d4ff;
+  }
+}
+
+body.idle input,
+body.idle select,
+body.idle button {
+  animation: idleBorder 4s ease-in-out infinite;
+}
+
+input,
+select,
+button {
+  border: 1px solid #00d4ff;
+}
