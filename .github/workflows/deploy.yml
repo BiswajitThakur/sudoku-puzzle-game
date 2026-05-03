@@ -31,9 +31,9 @@ jobs:
 
       - name: Prepare deploy directory
         run: |
-          mkdir dist
-          cp -r pkg dist/
-          rm -f dist/pkg/.gitignore
+          mkdir -p dist/pkg
+          mv pkg/sudoku_puzzle_game.js dist/pkg/
+          mv pkg/sudoku_puzzle_game_bg.wasm dist/pkg/
           cp index.html dist/
           cp script.js dist/ || true
           cp style.css dist/ || true
