@@ -37,7 +37,6 @@ jobs:
           cp script.js dist/ || true
           cp style.css dist/ || true
           touch dist/.nojekyll
-          ls dist
           ls dist/pkg
 
       - name: Deploy to gh-pages
@@ -45,6 +44,4 @@ jobs:
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           publish_dir: ./dist
-          allow_empty_commit: true
-          keep_files: true
           publish_branch: gh-pages
