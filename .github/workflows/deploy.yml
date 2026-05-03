@@ -32,8 +32,8 @@ jobs:
       - name: Prepare deploy directory
         run: |
           mkdir dist
-          rm .gitignore
           cp -r pkg dist/
+          rm -f dist/pkg/.gitignore
           cp index.html dist/
           cp script.js dist/ || true
           cp style.css dist/ || true
